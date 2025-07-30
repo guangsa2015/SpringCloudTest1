@@ -1,0 +1,37 @@
+server:
+  port: 8084
+
+spring:
+  application:
+     name: customer-service
+  cloud:
+    loadbalancer:
+      default:
+        # 指定全局负载均衡策略（默认是 ROUND_ROBIN）
+        type: RANDOM  # 可选值：ROUND_ROBIN（轮询）、RANDOM（随机）
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/   #注册到服务中心
+    instance:
+      prefer-ip-address: true
+
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      #熔断实例名称 与注解名称一致
+      userService:
+        sliding-window-size: 10 #统计最近10个请求
+        failure-rate-threshold: 50 #失败率阀值
+        wait-duration-in-open-state: 10000 #熔断后开放状态时间
+        permitted-number-of-calls-in-half-open-state: 3 #半开状态允许的测试调用次数
+        register-health-indicator: true #注册健康指标
+  timelimiter:
+    instances:
+      userService:
+        timeout-duration: 3000 #调用超时3秒 视为失败
+
+
+
+

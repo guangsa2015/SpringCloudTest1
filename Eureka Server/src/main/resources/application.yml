@@ -1,0 +1,9 @@
+server:
+  port: 8761
+eureka:
+  client:
+    register-with-eureka: false #不注册自己到注册中心
+    fetch-registry: false #不获取服务列表（单节点无需同步）
+  server:
+    enable-self-preservation: false #关闭自我保护模式（开发环境）
+    eviction-interval-timer-in-ms: 30000 #清理无效服务的时间（30秒）

@@ -1,0 +1,35 @@
+server:
+  port: 8085
+spring:
+  application:
+    name: gateway-service
+  cloud:
+    gateway:
+      routes:
+        # 路由 1：匹配 /user/** 路径，转发到 user-service 服务
+         - id: user-service-route
+           uri: lb://user-service
+           predicates:
+              - Path=/user/**
+           filters:
+             - StripPrefix=1  #移除前面第一个路径  请求地址应为：http://localhost:8085/user/users/1
+             - AddRequestHeader=X-Gateway, spring-cloud-gateway  # 添加请求头 ,测试未成功
+             - AddRequestParameter=source, gateway               # 添加请求参数 
+        # 路由 2：匹配 /factory/** 路径，转发到 factory-service 服务
+         - id: factory-service-rout
+           uri: lb://factory-service
+           predicates:
+             - Path=/factory/**
+           filters:
+             - StripPrefix=1   # 请求地址应为：http://localhost:8085/factory/factory/sdf333  =》转发真实地址：http://localhost:8083/factory/sdf333
+        # 路由 3：匹配 /order/** 路径，转发到 order-service 服务
+         - id: order-service-route
+           uri: lb://order-service
+           predicates:
+             - Path=/order/**
+           filters:
+             - StripPrefix=1  #移除前面第一个路径  请求地址应为：http://localhost:8085/order/order/feign/order/13
+eureka:
+  client:
+    service-url:
+       defaultZone: http://localhost:8761/eureka/  #注册中心地址
